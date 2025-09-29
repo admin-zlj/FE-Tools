@@ -1,12 +1,14 @@
 {
   "name": "fe-tools",
-  "displayName": "Fe tools",
+  "displayName": "FE-Tools",
   "version": "0.0.1",
   "description": "一个前端工具集的浏览器插件",
   "author": "https://github.com/admin-zlj",
   "scripts": {
     "dev": "plasmo dev",
+    "dev:rm": "rm -rf build/chrome-mv3-dev && plasmo dev",
     "build": "plasmo build",
+    "build:zip": "pnpm build --zip",
     "package": "plasmo package"
   },
   "dependencies": {
