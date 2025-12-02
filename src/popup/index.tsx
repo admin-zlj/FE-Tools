@@ -1,14 +1,20 @@
-import { useState } from "react"
+import { navigateTo } from "~utils"
 
+/**
+ * 点击插件图标弹层
+ */
 function IndexPopup() {
-  const [data, setData] = useState("")
-
   const openOptionsPage = () => {
-    chrome.runtime.openOptionsPage()
+    navigateTo({ type: "options" })
   }
 
   const openTabPage = () => {
-    chrome.tabs.create({ url: chrome.runtime.getURL("test.html") })
+    navigateTo({ type: "tabs", path: "/demo" })
+  }
+
+  const openSidebar = async () => {
+    navigateTo({ type: "sidePanel" })
+    window.close()
   }
 
   return (
@@ -51,13 +57,8 @@ function IndexPopup() {
           }}>
           打开新标签页
         </button>
+        <button onClick={openSidebar}>打开 Sidebar</button>
       </div>
-      {data}
-      <input
-        onChange={(e) => setData(e.target.value)}
-        value={data}
-        style={{ marginTop: "16px" }}
-      />
       <footer style={{ marginTop: "16px" }}>Crafted by FE-Tools</footer>
     </div>
   )

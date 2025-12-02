@@ -1,5 +1,8 @@
 import { useState } from "react"
 
+/**
+ * Options Page
+ */
 function IndexOptions() {
   return (
     <div
