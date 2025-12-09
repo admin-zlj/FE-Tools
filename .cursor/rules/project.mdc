@@ -1,0 +1,41 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rules for Plasmo Browser Extension
+
+## 项目概述
+
+- 项目名称: fe-tools
+- 框架: Plasmo + React + TypeScript
+- 目标: 开发高质量浏览器扩展
+
+## 项目结构约定
+
+src/
+├── popup
+│ └── index.tsx # Popup 页面
+├── options/
+│ └── index.tsx # Options 页面
+├── sidepanel/
+│ └── index.tsx # sidepanel 页面
+├── tabs/       # tabs 页面
+├── contents/
+│ └── index.tsx # Content Scripts
+├── background.ts # Background Service Worker
+├── components/ # 共享组件
+├── hooks/ # 全局使用的自定义 hooks
+├── utils/ # 全局使用的工具函数
+├── service/ # 全局使用的接口函数
+└── constants/ # 全局使用的常量
+
+
+## 命名约定
+- 文件名: 字母全部小写，使用 - 连接（如：tab-list）
+- 变量名: 小驼峰（如：tabList）
+- 常量名: 字母全部大写，使用 _ 连接(如：TAB_LIST)
+
+## 代码规范
+- 易于维护：所有一定要可读性优先，保持高可读性
+- 代码质量：以上基础上要尽量简洁，编写高质量的代码
+

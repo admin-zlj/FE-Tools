@@ -1,0 +1,11 @@
+---
+globs: *.tsx,*.less
+alwaysApply: false
+---
+# 组件的开发
+- 优先使用 Ant Design 组件
+
+
+# 样式的开发
+- 组件内样式使用原子类 UnoCss
+- 样式过多使用 CSS Module ，在同级文件夹下新建module文件
