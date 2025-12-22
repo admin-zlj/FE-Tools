@@ -6,12 +6,13 @@
   "author": "https://github.com/admin-zlj",
   "scripts": {
     "dev": "plasmo dev",
-    "dev:rm": "rm -rf build/chrome-mv3-dev && plasmo dev",
+    "dev:rm": "rm -rf build/chrome-mv3-dev  && plasmo dev",
     "build": "plasmo build",
     "build:zip": "pnpm build --zip",
     "package": "plasmo package"
   },
   "dependencies": {
+    "antd": "^6.1.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -22,6 +23,9 @@
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
+    "@unocss/postcss": "^66.5.10",
+    "unocss": "^66.5.10",
+    "postcss": "8.4.33",
     "prettier": "3.2.4",
     "typescript": "5.3.3"
   },

@@ -1,4 +1,6 @@
+import { Button } from "antd"
 import { navigateTo } from "~utils"
+import "~style.css"
 
 /**
  * 点击插件图标弹层
@@ -34,6 +36,7 @@ function IndexPopup() {
           marginTop: "16px"
         }}>
         <button
+          className="color-red"
           onClick={openOptionsPage}
           style={{
             padding: "8px 16px",
@@ -57,8 +60,9 @@ function IndexPopup() {
           }}>
           打开新标签页
         </button>
-        <button onClick={openSidebar}>打开 Sidebar</button>
+        <Button onClick={openSidebar}>打开 Sidebar</Button>
       </div>
+
       <footer style={{ marginTop: "16px" }}>Crafted by FE-Tools</footer>
     </div>
   )
