@@ -12,6 +12,7 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@ant-design/icons": "6.x",
     "antd": "^6.1.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
@@ -24,10 +25,10 @@
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "@unocss/postcss": "^66.5.10",
-    "unocss": "^66.5.10",
     "postcss": "8.4.33",
     "prettier": "3.2.4",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "unocss": "^66.5.10"
   },
   "manifest": {
     "host_permissions": [

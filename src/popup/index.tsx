@@ -1,6 +1,10 @@
-import { Button } from "antd"
 import { navigateTo } from "~utils"
+
 import "~style.css"
+
+import { useState } from "react"
+
+import { PROJECT_LOGO } from "~constants/img"
 
 /**
  * 点击插件图标弹层
@@ -20,50 +24,12 @@ function IndexPopup() {
   }
 
   return (
-    <div
-      style={{
-        width: "300px",
-        display: "flex",
-        flexDirection: "column",
-        padding: 16
-      }}>
-      <h1>FE-Tools Extension</h1>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-          marginTop: "16px"
-        }}>
-        <button
-          className="color-red"
-          onClick={openOptionsPage}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#4285f4",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}>
-          打开选项页面
-        </button>
-        <button
-          onClick={openTabPage}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#34a853",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}>
-          打开新标签页
-        </button>
-        <Button onClick={openSidebar}>打开 Sidebar</Button>
-      </div>
+    <div className="w-200px">
+      {/* 顶部主题区域 */}
 
-      <footer style={{ marginTop: "16px" }}>Crafted by FE-Tools</footer>
+      {/* 中部工具入口区域 */}
+
+      {/* 底部操作区域 */}
     </div>
   )
 }

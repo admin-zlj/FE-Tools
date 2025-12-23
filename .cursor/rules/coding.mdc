@@ -7,5 +7,5 @@ alwaysApply: false
 
 
 # 样式的开发
-- 组件内样式使用原子类 UnoCss
-- 样式过多使用 CSS Module ，在同级文件夹下新建module文件
+- 样式使用原子类 UnoCss
+- 当样式超过4个时，使用 CSS Module ，在同级文件夹下新建module.css文件
