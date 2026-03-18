@@ -1,11 +1,12 @@
 ---
-globs: *.tsx,*.less
-alwaysApply: false
+alwaysApply: true
 ---
+
 # 组件的开发
+
 - 优先使用 Ant Design 组件
 
-
 # 样式的开发
-- 样式使用原子类 UnoCss
-- 当样式超过4个时，使用 CSS Module ，在同级文件夹下新建module.css文件
+
+- 开发样式时一个div如果样式小于等于四个时，一定一定使用原子类 UnoCss
+- 当一个模块样式超过4个时，使用 CSS Module ，写在同级文件夹下module.css文件中，没有module.css文件则新建

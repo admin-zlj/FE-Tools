@@ -1,35 +1,21 @@
-import { navigateTo } from "~utils"
-
 import "~style.css"
 
-import { useState } from "react"
-
-import { PROJECT_LOGO } from "~constants/img"
+import { Footer } from "./components/footer/footer"
+import { Header } from "./components/header/header"
+import { ToolsList } from "./components/tools-list"
 
 /**
  * 点击插件图标弹层
  */
 function IndexPopup() {
-  const openOptionsPage = () => {
-    navigateTo({ type: "options" })
-  }
-
-  const openTabPage = () => {
-    navigateTo({ type: "tabs", path: "/demo" })
-  }
-
-  const openSidebar = async () => {
-    navigateTo({ type: "sidePanel" })
-    window.close()
-  }
-
   return (
-    <div className="w-200px">
-      {/* 顶部主题区域 */}
-
-      {/* 中部工具入口区域 */}
-
-      {/* 底部操作区域 */}
+    <div className="w-200px flex flex-col">
+      {/* 顶部 */}
+      <Header />
+      {/* 中部工具列表 */}
+      <ToolsList />
+      {/* 底部 */}
+      <Footer />
     </div>
   )
 }
