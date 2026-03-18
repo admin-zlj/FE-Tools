@@ -24,3 +24,8 @@ export const TOOLS_CONFIG = [
   //     img: "https://img.alicdn.com/imgextra/i4/O1CN019MTdbA1qDC1qDSZ1T_!!6000000005461-2-tps-40-40.png"
   //   }
 ]
+
+//  获取工具配置
+export const getConfigByKey = (toolKey: string) => {
+  return TOOLS_CONFIG.find((item) => item.key === toolKey)
+}

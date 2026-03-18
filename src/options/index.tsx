@@ -1,8 +1,8 @@
+import "~style.css"
+
 import { message } from "antd"
 
 import { useStorage } from "@plasmohq/storage/hook"
-
-import "~style.css"
 
 import { TOOLS_CONFIG } from "~/config/tools-config"
 import { COMMON_TOOLS_KEY } from "~constants/storage-key"

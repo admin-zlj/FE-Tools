@@ -5,8 +5,8 @@ import { lazy } from "react"
  * key 与 TOOLS_CONFIG 中的 key 一一对应，值为懒加载的组件
  */
 const TOOL_COMPONENT_MAP = {
-  "json-parser": lazy(() => import("~components/json-parser")),
-  "color-converter": lazy(() => import("~components/color-converter"))
+  "json-parser": lazy(() => import("~tools-components/json-parser")),
+  "color-converter": lazy(() => import("~tools-components/color-converter"))
 }
 
 /**

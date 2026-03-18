@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 
 import { COMMON_TOOLS_KEY, CURRENT_SIDE_TOOL_KEY } from "~constants/storage-key"
-import { navigateTo } from "~utils"
+import { navigateTo } from "~utils/navigate"
 
 import { ListEmpty } from "../list-empty"
 import { ListItem } from "../list-item/list-item"

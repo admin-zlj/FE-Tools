@@ -3,7 +3,7 @@ import { Tooltip } from "antd"
 import React from "react"
 
 import { PROJECT_LOGO } from "~constants/img"
-import { navigateTo } from "~utils"
+import { navigateTo } from "~utils/navigate"
 
 import styles from "./header.module.css"
 

@@ -1,9 +1,13 @@
-import { Empty } from "antd"
+import "~style.css"
+
+import { Empty, Spin } from "antd"
 import { Suspense } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
+import { ToolHeader } from "~components/tool-header"
 import { getToolComponent } from "~config/tool-component-map"
+import { getConfigByKey } from "~config/tools-config"
 import { CURRENT_SIDE_TOOL_KEY } from "~constants/storage-key"
 
 /**
@@ -12,7 +16,12 @@ import { CURRENT_SIDE_TOOL_KEY } from "~constants/storage-key"
 const Index = () => {
   const [currentToolKey] = useStorage<string>(CURRENT_SIDE_TOOL_KEY, "")
 
+  // 获取工具组件
   const ToolComponent = getToolComponent(currentToolKey)
+  // 获取工具配置
+  const toolConfig = getConfigByKey(currentToolKey)
+  // 获取工具名称
+  const toolName = toolConfig?.name ?? ""
 
   if (!ToolComponent) {
     return (
@@ -21,7 +30,15 @@ const Index = () => {
   }
 
   return (
-    <Suspense fallback={<div>加载中...</div>}>
+    <Suspense
+      fallback={
+        <div className="w-100vw h-100vh flex-center">
+          <Spin size="large" />
+        </div>
+      }>
+      {/* header */}
+      <ToolHeader toolName={toolName} />
+      {/* tool */}
       <ToolComponent isSidepanel />
     </Suspense>
   )
