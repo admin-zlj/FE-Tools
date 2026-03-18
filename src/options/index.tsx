@@ -4,10 +4,10 @@ import { useStorage } from "@plasmohq/storage/hook"
 
 import "~style.css"
 
+import { TOOLS_CONFIG } from "~/config/tools-config"
 import { COMMON_TOOLS_KEY } from "~constants/storage-key"
 
 import { ToolCard } from "./components/tool-card"
-import { TOOLS_CONFIG } from "./tools-config"
 
 /**
  * Options Page - 展示所有可用工具，支持加入/移除常用
@@ -19,7 +19,7 @@ function IndexOptions() {
     return commonTools?.some((tool) => tool.key === toolKey) ?? false
   }
 
-  const handleAddToCommon = (tool: (typeof TOOLS_CONFIG)[number]) => {
+  const handleAddToCommon = (tool) => {
     if (isCommonTool(tool.key)) return
     setCommonTools([...(commonTools || []), tool])
     message.success(`已将「${tool.name}」加入常用`)

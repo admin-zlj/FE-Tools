@@ -5,10 +5,12 @@
  */
 export const navigateTo = async ({
   type,
-  path
+  path,
+  query
 }: {
   type: "options" | "tabs" | "sidePanel"
   path?: string
+  query?: Record<string, string>
 }) => {
   // 打开 options 页面
   if (type === "options") {
@@ -17,7 +19,10 @@ export const navigateTo = async ({
   // 打开新的 tab 页
   if (type === "tabs" && path) {
     const p = path.startsWith("/") ? path.slice(1) : path
-    chrome.tabs.create({ url: chrome.runtime.getURL(`tabs/${p}.html`) })
+    const queryString = query ? `${new URLSearchParams(query).toString()}` : ""
+    chrome.tabs.create({
+      url: chrome.runtime.getURL(`tabs/${p}.html?${queryString}`)
+    })
   }
 
   // 在当前tab页，打开 sidePanel
@@ -25,4 +30,9 @@ export const navigateTo = async ({
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     chrome.sidePanel.open({ tabId: tab.id })
   }
+}
+
+export const getUrlParams = (url?) => {
+  const searchParams = new URLSearchParams(url || window.location.search)
+  return Object.fromEntries(searchParams.entries())
 }

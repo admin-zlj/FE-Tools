@@ -14,7 +14,10 @@ export const ListItem = ({ data, onClick, onClickExpand }) => {
         </div>
         <ExpandOutlined
           className="text-16px color-#999 "
-          onClick={() => onClickExpand(data)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onClickExpand(data)
+          }}
         />
       </div>
       <div className="h-1px bg-gray-200" />
