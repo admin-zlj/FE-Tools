@@ -2,13 +2,14 @@ import React, { useState } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
+import { COMMON_TOOLS_KEY } from "~constants/storage-key"
 import { navigateTo } from "~utils"
 
-import { ListEmpty } from "./list-empty"
-import { ListItem } from "./list-item/list-item"
+import { ListEmpty } from "../list-empty"
+import { ListItem } from "../list-item/list-item"
 
 export const ToolsList = () => {
-  const [commonTools] = useStorage<any[]>("common-tools", [])
+  const [commonTools] = useStorage<any[]>(COMMON_TOOLS_KEY, [])
 
   // 判断是否有工具
   const hasTools =
