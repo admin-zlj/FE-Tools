@@ -37,7 +37,7 @@ const Tool = () => {
       }>
       <div className="w-100vw h-100vh flex flex-col">
         {/* header */}
-        <ToolHeader toolName={toolName} />
+        <ToolHeader toolName={toolName} showMoreTool />
 
         {/* tool */}
         <div className="flex-1 overflow-auto">
