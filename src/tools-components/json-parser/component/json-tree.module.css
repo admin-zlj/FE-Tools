@@ -1,0 +1,182 @@
+/* ===== JSON 树形视图自定义样式 ===== */
+/* 
+ * 样式映射说明（对应 react-json-view-lite 的 StyleProps）：
+ * - container: 最外层容器，包裹整个 JSON 树
+ * - basicElement (basicChildStyle): 每一行数据的容器（包含 key、value、标点等）
+ * - childFields (childFieldsContainer): 子节点容器，用于缩进嵌套结构
+ * - label: 普通 key 名称（不可折叠的对象/数组的 key）
+ * - clickableLabel: 可折叠对象/数组的 key 名称（点击可展开/折叠）
+ * - stringValue/numberValue/booleanValue/nullValue/undefinedValue/otherValue: 不同类型值的样式
+ * - punctuation: 标点符号（冒号、逗号、括号等）
+ * - expandIcon: 折叠状态的图标（右箭头 ▶，点击展开）
+ * - collapseIcon: 展开状态的图标（下箭头 ▼，点击折叠）
+ * - collapsedContent: 折叠后显示的省略内容区域
+ */
+
+/* 最外层容器：包裹整个 JSON 树 */
+.container {
+  font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 每一行数据的容器：包含 key、冒号、value、逗号等 */
+.basicElement {
+  position: relative;
+  padding: 1px 4px;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+  cursor: pointer;
+}
+
+/* 悬停高亮：只高亮当前行，不冒泡到父级 */
+.basicElement:hover > * {
+  /* 子元素不继承悬停效果 */
+}
+
+.basicElement:hover {
+  background-color: rgba(74, 144, 217, 0.08);
+}
+
+/* 阻止嵌套元素的悬停冒泡：子元素悬停时父元素不高亮 */
+.basicElement:has(.basicElement:hover) {
+  background-color: transparent;
+}
+
+/* 点击后持久高亮：淡蓝色，与整体风格协调 */
+.basicElementActive {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  border-left: 2px solid #3b82f6;
+  padding-left: 2px;
+}
+
+.basicElementActive:hover {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* 子节点容器：控制缩进，并添加虚线连接 */
+.childFields {
+  position: relative;
+  padding-left: 24px;
+  margin-left: 6px;
+  border-left: 1px dashed #ccc;
+}
+
+/* 普通 key 名称：不可折叠的属性名 */
+.label {
+  color: #c41a16;
+  font-weight: 500;
+}
+
+/* 可折叠的 key 名称：对象/数组的属性名，点击可展开/折叠 */
+.clickableLabel {
+  color: #c41a16;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ===== 不同类型值的颜色 ===== */
+
+/* 字符串值：绿色 */
+.stringValue {
+  color: #067d17;
+  word-break: break-all;
+}
+
+/* 数字值：蓝色 */
+.numberValue {
+  color: #1c00cf;
+}
+
+/* 布尔值：橙色 */
+.booleanValue {
+  color: #e06c00;
+}
+
+/* null 值：灰色斜体 */
+.nullValue {
+  color: #808080;
+  font-style: italic;
+}
+
+/* undefined 值：灰色斜体 */
+.undefinedValue {
+  color: #808080;
+  font-style: italic;
+}
+
+/* 其他类型值：深灰色 */
+.otherValue {
+  color: #2d3748;
+}
+
+/* 标点符号：冒号、逗号、括号等 */
+.punctuation {
+  color: #333;
+}
+
+/* 折叠图标（右箭头 ▶）：表示当前节点已折叠，点击可展开 */
+.expandIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  margin-left: -2px;
+  font-size: 10px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+.expandIcon::before {
+  content: '▶';
+}
+
+.expandIcon:hover {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+/* 展开图标（下箭头 ▼）：表示当前节点已展开，点击可折叠 */
+.collapseIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  margin-left: -2px;
+  font-size: 10px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+.collapseIcon::before {
+  content: '▼';
+}
+
+.collapseIcon:hover {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+/* 折叠后的省略内容：显示 … 表示有隐藏内容 */
+.collapsedContent {
+  color: #999;
+  cursor: pointer;
+  margin: 0 2px;
+}
+
+.collapsedContent::after {
+  content: ' … ';
+  font-style: italic;
+}

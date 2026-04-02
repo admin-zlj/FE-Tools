@@ -1,8 +1,7 @@
 import "~style.css"
 
-import { AppstoreOutlined } from "@ant-design/icons"
-import { Empty, Spin, Tooltip } from "antd"
-import { Suspense } from "react"
+import { Empty, Spin } from "antd"
+import { Suspense, useEffect } from "react"
 
 import { ToolHeader } from "~components/tool-header"
 import { getToolComponent } from "~config/tool-component-map"
@@ -20,10 +19,13 @@ const Tool = () => {
   // 获取工具名称
   const toolName = toolConfig?.name ?? ""
 
+  useEffect(() => {
+    // 设置页面标题
+    document.title = toolName
+  }, [toolName])
+
   if (!ToolComponent) {
-    return (
-      <Empty description="未找到此工具" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-    )
+    return <Empty description="未找到此工具" image={Empty.PRESENTED_IMAGE_SIMPLE} />
   }
 
   return (

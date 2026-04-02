@@ -24,9 +24,7 @@ const Index = () => {
   const toolName = toolConfig?.name ?? ""
 
   if (!ToolComponent) {
-    return (
-      <Empty description="未找到此工具" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-    )
+    return <Empty description="未找到此工具" image={Empty.PRESENTED_IMAGE_SIMPLE} />
   }
 
   return (
@@ -36,10 +34,12 @@ const Index = () => {
           <Spin size="large" />
         </div>
       }>
-      {/* header */}
-      <ToolHeader toolName={toolName} />
-      {/* tool */}
-      <ToolComponent isSidepanel />
+      <div className="w-100vw h-100vh flex flex-col">
+        {/* header */}
+        <ToolHeader toolName={toolName} />
+        {/* tool */}
+        <ToolComponent isSidepanel />
+      </div>
     </Suspense>
   )
 }
