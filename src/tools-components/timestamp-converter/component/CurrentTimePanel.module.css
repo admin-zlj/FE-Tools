@@ -1,0 +1,60 @@
+.panel {
+  background: linear-gradient(135deg, #f87d19 0%, #f5a623 100%);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 16px rgba(248, 125, 25, 0.28);
+}
+
+.timeLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.timeValue {
+  font-size: 16px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.tsItem {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tsValue {
+  font-size: 12px;
+  font-family: monospace;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.copyBtn {
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 0 !important;
+  height: auto !important;
+  font-size: 13px !important;
+  flex-shrink: 0;
+}
+
+.copyBtn:hover {
+  color: #fff !important;
+}

@@ -38,7 +38,9 @@ const Index = () => {
         {/* header */}
         <ToolHeader toolName={toolName} showMoreTool />
         {/* tool */}
-        <ToolComponent isSidepanel />
+        <div className="flex-1 overflow-auto">
+          <ToolComponent isSidepanel />
+        </div>
       </div>
     </Suspense>
   )

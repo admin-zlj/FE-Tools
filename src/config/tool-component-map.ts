@@ -6,7 +6,9 @@ import { lazy } from "react"
  */
 const TOOL_COMPONENT_MAP = {
   "json-parser": lazy(() => import("~tools-components/json-parser")),
-  "color-converter": lazy(() => import("~tools-components/color-converter"))
+  "color-converter": lazy(() => import("~tools-components/color-converter")),
+  "timestamp-converter": lazy(() => import("~tools-components/timestamp-converter")),
+  "encoding-converter": lazy(() => import("~tools-components/encoding-converter"))
 }
 
 /**
