@@ -28,21 +28,22 @@ const Index = () => {
   }
 
   return (
-    <Suspense
-      fallback={
-        <div className="w-100vw h-100vh flex-center">
-          <Spin size="large" />
-        </div>
-      }>
-      <div className="w-100vw h-100vh flex flex-col">
-        {/* header */}
-        <ToolHeader toolName={toolName} showMoreTool />
+    <div className="w-100vw h-100vh flex flex-col">
+      {/* header */}
+      <ToolHeader toolName={toolName} showMoreTool />
+
+      <Suspense
+        fallback={
+          <div className="w-100vw h-100vh flex-center">
+            <Spin size="large" />
+          </div>
+        }>
         {/* tool */}
         <div className="flex-1 overflow-auto">
           <ToolComponent isSidepanel />
         </div>
-      </div>
-    </Suspense>
+      </Suspense>
+    </div>
   )
 }
 

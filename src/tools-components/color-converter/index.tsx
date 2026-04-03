@@ -13,7 +13,8 @@ import {
   type RGBA
 } from "./utils"
 
-const DEFAULT_RGBA: RGBA = { r: 0, g: 0, b: 0, a: 1 }
+
+const DEFAULT_RGBA: RGBA = { r: 242, g: 67, b: 113, a: 1 }
 
 /**
  * 颜色转化工具
@@ -59,17 +60,14 @@ const ColorConverter = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
   )
 
   /** 输入框变化 → 尝试解析为 RGBA，成功则同步颜色选择器 */
-  const handleInputChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value
-      setInputValue(value)
-      const parsed = parseToRGBA(value)
-      if (parsed) {
-        setRgba(parsed)
-      }
-    },
-    []
-  )
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
+    setInputValue(value)
+    const parsed = parseToRGBA(value)
+    if (parsed) {
+      setRgba(parsed)
+    }
+  }, [])
 
   /** 复制颜色值到剪贴板 */
   const handleCopy = useCallback((text: string) => {
