@@ -1,7 +1,7 @@
 import { QrcodeOutlined } from "@ant-design/icons"
 import { Button, Input, message } from "antd"
 import QRCode from "qrcode"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 import QrConfigPanel from "./components/QrConfig"
 import QrPreview from "./components/QrPreview"
@@ -25,7 +25,7 @@ const DEFAULT_CONFIG: QrGeneratorConfig = {
  * 负责状态管理和业务逻辑编排，UI 渲染委托给子组件
  */
 const QrGenerator = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
-  /** 用户输入的文本或链接内容 */
+  /** 用户输入的文本或链接内容，初始值为当前页面 URL（仅 sidepanel 模式） */
   const [inputText, setInputText] = useState("")
   /** 是否已成功生成二维码（控制 canvas 显示和下载按钮的出现） */
   const [hasContent, setHasContent] = useState(false)
@@ -33,6 +33,32 @@ const QrGenerator = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
   const [config, setConfig] = useState<QrGeneratorConfig>(DEFAULT_CONFIG)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [messageApi, contextHolder] = message.useMessage()
+
+  /**
+   * 仅在 sidepanel 模式下，组件挂载时自动获取当前激活标签页的 URL 填入输入框
+   * tab 页模式下不自动填入，由用户手动输入
+   */
+  useEffect(() => {
+    if (!isSidepanel) return
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const currentUrl = tabs[0]?.url
+      if (currentUrl) {
+        setInputText(currentUrl)
+        QRCode.toCanvas(canvasRef.current, currentUrl, {
+          errorCorrectionLevel: "M",
+          width: 240,
+          margin: 2,
+          color: {
+            dark: config.darkColor,
+            light: config.lightColor
+          }
+        }).then(() => {
+          setHasContent(true)
+        })
+      }
+    })
+  }, [])
 
   /** 点击生成按钮，根据当前输入和配置生成二维码 */
   const handleGenerate = async () => {
