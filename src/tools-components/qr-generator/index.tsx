@@ -1,8 +1,9 @@
 import { QrcodeOutlined } from "@ant-design/icons"
-import { Button, Input, message } from "antd"
+import { Button, message } from "antd"
 import QRCode from "qrcode"
 import React, { useEffect, useRef, useState } from "react"
 
+import InputPanel from "./components/InputPanel"
 import QrConfigPanel from "./components/QrConfig"
 import QrPreview from "./components/QrPreview"
 import styles from "./index.module.css"
@@ -109,16 +110,14 @@ const QrGenerator = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
     <div className={styles.container}>
       {contextHolder}
 
-      {/* 输入区域 */}
-      <div className="w-full">
-        <Input.TextArea
-          value={inputText}
-          onChange={(event) => setInputText(event.target.value)}
-          placeholder="请输入文本或链接..."
-          autoSize={{ minRows: 3, maxRows: 6 }}
-          allowClear
-        />
-      </div>
+      <InputPanel
+        value={inputText}
+        onChange={setInputText}
+        onClear={() => {
+          setInputText("")
+          setHasContent(false)
+        }}
+      />
 
       <QrConfigPanel config={config} onChange={handleConfigChange} />
 
