@@ -1,0 +1,9 @@
+/* 颜色配置区域 */
+.configSection {
+  width: 100%;
+  background: #f9fafb;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 10px 16px 0;
+  box-sizing: border-box;
+}
