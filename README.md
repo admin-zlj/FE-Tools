@@ -1,6 +1,6 @@
 # FE-Tools
 
-> 🛠️ 面向前端开发者的浏览器工具集合插件，集成常用开发小工具，提升日常开发效率。
+> 🛠️ 面向开发者的浏览器工具集合插件，集成常用开发小工具，提升日常开发效率。
 
 ## 功能特性
 
@@ -24,6 +24,6 @@ pnpm i
 pnpm dev
 ```
 
-在浏览器插件管理页（`chrome://extensions/`）开启开发者模式，导入 `build/chrome-mv3-dev` 目录即可。
+在浏览器插件管理页（`chrome://extensions/`）开启开发者模式，导入 `build/chrome-mv3-dev` 目录。
 
-如有问题或建议，欢迎提交 [Issues](https://github.com/admin-zlj/fe-tools/issues)。
+如有问题或建议，欢迎提交 Issues
