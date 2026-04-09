@@ -2,6 +2,8 @@ import { DeleteOutlined } from "@ant-design/icons"
 import { Button, Input } from "antd"
 import React from "react"
 
+import styles from "./InputPanel.module.css"
+
 interface InputPanelProps {
   value: string
   onChange: (value: string) => void
@@ -31,7 +33,7 @@ const InputPanel = ({ value, onChange, onClear }: InputPanelProps) => {
         onChange={(event) => onChange(event.target.value)}
         placeholder="请输入文本或链接..."
         autoSize={{ minRows: 3, maxRows: 6 }}
-        className="w-full! text-14px! rounded-8px! resize-none!"
+        className={styles.textarea}
         allowClear={false}
       />
     </div>
