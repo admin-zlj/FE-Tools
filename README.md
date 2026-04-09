@@ -1,33 +1,29 @@
 # FE-Tools
 
-A Browser Extension
+> 🛠️ 面向前端开发者的浏览器工具集合插件，集成常用开发小工具，提升日常开发效率。
 
-# 开发启动流程
+## 功能特性
+
+- **JSON 解析** — 格式化 JSON 字符串，支持树形展示、错误提示、可拖拽面板
+- **颜色转换** — 支持 RGB/RGBA、HEX、HSL/HSLA、HSV/HSVA 格式互转，颜色选择器与输入框双向联动
+- **时间戳转换** — 本地化时间与时间戳相互转换，支持秒/毫秒，实时显示当前时间
+- **编码转换** — 支持 Base64、Unicode、URL 编码等多种编码方式实时转换
+- **二维码生成** — 输入文本或链接快速生成二维码，支持下载 PNG
+
+## 使用方式
+
+插件提供两种使用入口：
+
+- **Side Panel 侧边栏** — 在浏览器侧边栏中使用工具，不影响当前页面
+- **独立标签页** — 在新标签页中打开工具，获得更大的操作空间
+
+## 开发
 
 ```bash
-  pnpm i
-
-  pnpm dev
+pnpm i
+pnpm dev
 ```
 
-在浏览器插件导入build目录下 dev 的打包产物
+在浏览器插件管理页（`chrome://extensions/`）开启开发者模式，导入 `build/chrome-mv3-dev` 目录即可。
 
-# 工具开发流程
-
-1. 在 `src/config/tool-config` 新增一个工具配置项
-
-2. 在 `src/components` 新增一个工具组件
-
-3. 在 `src/config/tool-component-map` 新增一个工具 `key` 与组件懒加载映射
-
-4. `isSidepanel` 区分组件是否在侧边栏打开
-
-```js
-
-const ColorConverter = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
-  return <div>ColorConverter-{isSidepanel}</div>
-}
-
-```
-
-# 发布流程
+如有问题或建议，欢迎提交 [Issues](https://github.com/admin-zlj/fe-tools/issues)。
