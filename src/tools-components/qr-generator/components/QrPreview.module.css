@@ -1,0 +1,21 @@
+/* canvas 容器，宽度与上方元素保持一致，高度自适应内容 */
+.canvasWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 300px;
+  border-radius: 12px;
+  border: 1.5px solid #e8e8e8;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(22, 161, 135, 0.08);
+  overflow: hidden;
+}
+
+/* 下载按钮 */
+.downloadBtn {
+  border-radius: 8px !important;
+  height: 36px !important;
+  padding: 0 24px !important;
+  font-size: 14px !important;
+}

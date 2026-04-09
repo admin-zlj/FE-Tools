@@ -1,0 +1,14 @@
+.textarea {
+  width: 100%;
+  font-size: 14px;
+  border-radius: 8px !important;
+  resize: none;
+}
+
+/* 覆盖 antd Input.TextArea 的 hover 和 focus 边框颜色为主题色 */
+.textarea:hover,
+.textarea:focus,
+.textarea:focus-within {
+  border-color: #16a187 !important;
+  box-shadow: 0 0 0 2px rgba(22, 161, 135, 0.15) !important;
+}

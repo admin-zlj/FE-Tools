@@ -5,5 +5,11 @@ export default defineConfig({
     filesystem: ["src/**/*.{html,jsx,tsx}"]
   },
   presets: [presetWind3()],
-  rules: []
+  rules: [
+	// flex 居中
+    [
+      "flex-center",
+      { display: "flex", "justify-content": "center", "align-items": "center" }
+    ],
+  ]
 })

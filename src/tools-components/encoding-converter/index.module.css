@@ -1,0 +1,48 @@
+.container {
+  min-width: 360px;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Base64 按钮：超过5个样式，使用 CSS Module */
+.btnBase64 {
+  height: 36px !important;
+  border-radius: 12px !important;
+  background: #ede8ff !important;
+  color: #855ff3 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  border: none !important;
+}
+
+/* URL 按钮：超过5个样式，使用 CSS Module */
+.btnUrl {
+  height: 36px !important;
+  border-radius: 12px !important;
+  background: #f5eeff !important;
+  color: #855ff3 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  border: none !important;
+}
+
+/* 输出文本框：超过5个样式，使用 CSS Module */
+.outputTextarea {
+  border-radius: 12px !important;
+  background: #f8f6ff !important;
+  border-color: #e8e0ff !important;
+  resize: none !important;
+  color: #555 !important;
+}
+
+/* 输入文本框：超过5个样式，使用 CSS Module */
+.inputTextarea {
+  border-radius: 12px !important;
+  background: #f8f6ff !important;
+  border-color: #e8e0ff !important;
+  resize: none !important;
+}
+

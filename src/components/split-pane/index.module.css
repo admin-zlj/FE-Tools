@@ -1,0 +1,110 @@
+/* 可拖拽分隔的双面板布局 */
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 水平方向（左右分布） */
+.horizontal {
+  flex-direction: row;
+}
+
+/* 垂直方向（上下分布） */
+.vertical {
+  flex-direction: column;
+}
+
+/* 第一个面板：尺寸由 JS 动态控制 */
+.firstPane {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.horizontal .firstPane {
+  min-width: 120px;
+}
+
+.vertical .firstPane {
+  min-height: 80px;
+}
+
+/* 第二个面板：占据剩余空间 */
+.secondPane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.horizontal .secondPane {
+  min-width: 200px;
+}
+
+.vertical .secondPane {
+  min-height: 100px;
+}
+
+/* ===== 可拖拽分隔条 ===== */
+
+.resizer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.resizer::before {
+  content: '';
+  background-color: #e2e8f0;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+/* 水平分隔条（左右分布时） */
+.resizerHorizontal {
+  width: 12px;
+  cursor: col-resize;
+}
+
+.resizerHorizontal::before {
+  width: 4px;
+  height: 40px;
+}
+
+.resizerHorizontal:hover::before,
+.resizerHorizontal.resizerActive::before {
+  background-color: #3b82f6;
+  height: 60px;
+}
+
+/* 垂直分隔条（上下分布时） */
+.resizerVertical {
+  height: 12px;
+  cursor: row-resize;
+}
+
+.resizerVertical::before {
+  width: 40px;
+  height: 4px;
+}
+
+.resizerVertical:hover::before,
+.resizerVertical.resizerActive::before {
+  background-color: #3b82f6;
+  width: 60px;
+}
+
+/* 拖拽激活状态 */
+.resizerActive::before {
+  background-color: #3b82f6;
+}
+
+/* 小屏响应式已通过 JS 实现自动切换方向，此处不再隐藏分隔条 */

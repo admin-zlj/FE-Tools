@@ -1,0 +1,30 @@
+.header {
+  background-color: #1890ff;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  color: #333;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1890ff;
+  }
+}
+
+.footer {
+  padding: 5px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+  &:hover {
+    color: #999;
+  }
+}
