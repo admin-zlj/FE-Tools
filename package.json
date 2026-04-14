@@ -38,10 +38,5 @@
     "prettier": "3.2.4",
     "typescript": "5.3.3",
     "unocss": "^66.5.10"
-  },
-  "manifest": {
-    "host_permissions": [
-      "https://*/*"
-    ]
   }
 }
