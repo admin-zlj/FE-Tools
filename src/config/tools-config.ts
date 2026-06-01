@@ -32,6 +32,13 @@ export const TOOLS_CONFIG = [
     name: "二维码生成",
     desc: "输入文本或链接，快速生成对应的二维码图片。",
     img: "https://img.alicdn.com/imgextra/i1/O1CN01geePaF1yyNmYis1EG_!!6000000006647-2-tps-108-108.png"
+  },
+
+  {
+    key: "url-parser",
+    name: "URL 参数解析",
+    desc: "解析URL中的query参数，支持快捷复制每个key和value。",
+    img: "https://img.alicdn.com/imgextra/i1/O1CN01CcYlEQ1tuC5moELPu_!!6000000005961-2-tps-108-108.png"
   }
 ]
 

@@ -9,7 +9,8 @@ const TOOL_COMPONENT_MAP = {
   "color-converter": lazy(() => import("~tools-components/color-converter")),
   "timestamp-converter": lazy(() => import("~tools-components/timestamp-converter")),
   "encoding-converter": lazy(() => import("~tools-components/encoding-converter")),
-  "qr-generator": lazy(() => import("~tools-components/qr-generator"))
+  "qr-generator": lazy(() => import("~tools-components/qr-generator")),
+  "url-parser": lazy(() => import("~tools-components/url-parser"))
 }
 
 /**
