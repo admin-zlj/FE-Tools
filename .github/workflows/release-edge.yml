@@ -1,0 +1,90 @@
+name: Release Edge Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: '版本递增类型'
+        required: true
+        type: choice
+        options:
+          - patch    # 补丁版本：修复 Bug，1.0.0 → 1.0.1
+          - minor    # 次版本：新增功能，1.0.0 → 1.1.0
+          - major    # 主版本：重大变更，1.0.0 → 2.0.0
+        default: patch
+      release_type:
+        description: '发布类型'
+        required: true
+        type: choice
+        options:
+          - release
+          - prerelease
+        default: release
+
+permissions:
+  contents: write
+
+jobs:
+  release-edge:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取完整 git 历史
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. 安装 Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3. 安装 pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # 4. 安装依赖
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5. 自增版本号并提取新版本
+      - name: Bump version
+        id: bump
+        run: |
+          npm version ${{ inputs.version_type }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "🔖 New version: v$NEW_VERSION"
+
+      # 6. 提交版本变更并打 tag
+      - name: Commit and Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "release(edge): v${{ steps.bump.outputs.VERSION }}"
+          git tag -a "edge-v${{ steps.bump.outputs.VERSION }}" -m "release(edge): v${{ steps.bump.outputs.VERSION }}"
+          git push origin HEAD --follow-tags
+
+      # 7. 构建 Edge 版本
+      - name: Build Edge Extension
+        run: pnpm build:edge
+
+      # 8. 打包为 zip
+      - name: Package zip
+        run: cd build/edge-mv3-prod && zip -r ../../fe-tools-edge-v${{ steps.bump.outputs.VERSION }}.zip . && cd ../..
+
+      # 9. 创建 GitHub Release（自动生成 changelog）
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: edge-v${{ steps.bump.outputs.VERSION }}
+          name: Edge v${{ steps.bump.outputs.VERSION }}
+          generate_release_notes: true
+          prerelease: ${{ inputs.release_type == 'prerelease' }}
+          files: fe-tools-edge-v${{ steps.bump.outputs.VERSION }}.zip

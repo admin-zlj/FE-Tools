@@ -249,6 +249,15 @@ pnpm build        # 构建生产包
 pnpm build:zip    # 构建并打包为 zip
 ```
 
+### 自动化发布（GitHub Actions）
+
+Chrome 和 Edge 使用独立的工作流，互不影响：
+
+- **`.github/workflows/release-chrome.yml`**：Chrome 插件发布，tag 格式 `v*`
+- **`.github/workflows/release-edge.yml`**：Edge 插件发布，tag 格式 `edge-v*`
+- **触发方式**：GitHub Actions 页面手动触发，选择版本递增类型（patch / minor / major）和发布类型
+- **工作流程**：自增版本号 → 提交并打 tag → 构建对应平台产物 → 创建 GitHub Release（自动生成 changelog）并上传 zip
+
 ### 新增工具的步骤
 1. 在 `src/config/tools-config.ts` 的 `TOOLS_CONFIG` 数组中新增工具配置项（key、name、desc、img）
 2. 在 `src/tools-components/` 下新建工具组件目录和 `index.tsx`
