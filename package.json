@@ -1,11 +1,13 @@
 {
   "name": "fe-tools",
   "displayName": "FE-Tools",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "一个前端工具集的浏览器插件",
   "author": "https://github.com/admin-zlj",
   "manifest": {
-    "permissions": ["tabs"]
+    "permissions": [
+      "tabs"
+    ]
   },
   "scripts": {
     "dev": "plasmo dev --target=chrome-mv3 && plasmo dev --target=edge-mv3",
