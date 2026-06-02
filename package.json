@@ -1,7 +1,7 @@
 {
   "name": "fe-tools",
   "displayName": "FE-Tools",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "一个前端工具集的浏览器插件",
   "author": "https://github.com/admin-zlj",
   "manifest": {
