@@ -84,7 +84,9 @@ fe-tools/
 │       ├── json-parser/                 # JSON 解析工具
 │       ├── timestamp-converter/         # 时间戳转换工具
 │       ├── encoding-converter/          # 编码转换工具
-│       └── qr-generator/                # 二维码生成工具
+│       ├── qr-generator/                # 二维码生成工具
+│       ├── url-parser/                  # URL 参数解析工具
+│       └── mini-postman/                # MiniPostman 接口调试工具
 │
 ├── assets/
 │   └── icon.png                         # 插件图标
@@ -167,11 +169,12 @@ export const getToolComponent = (toolKey: string) => { ... }
 ```typescript
 export const COMMON_TOOLS_KEY = "FE_TOOLS_COMMON_TOOLS_LIST"   // 常用工具列表
 export const CURRENT_SIDE_TOOL_KEY = "FE_TOOLS_CURRENT_SIDE_TOOL"  // 侧边栏当前工具
+export const MINI_POSTMAN_HISTORY_KEY = "FE_TOOLS_MINI_POSTMAN_HISTORY" // MiniPostman 请求历史
 ```
 
 ---
 
-## 六、当前工具列表（5 个）
+## 六、当前工具列表（6 个）
 
 ### 6.1 JSON 解析（`json-parser`）
 - **功能**：输入 JSON 字符串，自动格式化并树形展示
@@ -195,6 +198,10 @@ export const CURRENT_SIDE_TOOL_KEY = "FE_TOOLS_CURRENT_SIDE_TOOL"  // 侧边栏�
 ### 6.5 二维码生成（`qr-generator`）
 - **功能**：输入文本或链接，快速生成对应的二维码图片
 - **特性**：实时生成、支持下载 PNG、主题色 #16a187、空状态占位提示
+
+### 6.6 MiniPostman（`mini-postman`）
+- **功能**：调试简单的 GET、POST 接口，支持自定义请求头和请求体
+- **特性**：请求方法选择（GET/POST）、URL 输入、Headers 编辑（key-value 可增删）、Body 编辑（仅 POST）、响应展示（状态码、耗时、响应头、响应体）、请求历史记录（以 URL 为 key 保存最近 5 次请求参数，点击可恢复配置）
 
 
 ---

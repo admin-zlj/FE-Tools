@@ -4,6 +4,7 @@
   "version": "0.0.6",
   "description": "一个前端工具集的浏览器插件",
   "author": "https://github.com/admin-zlj",
+  "license": "MIT",
   "manifest": {
     "permissions": [
       "tabs"
@@ -23,6 +24,7 @@
     "@ant-design/icons": "6.x",
     "@plasmohq/storage": "^1.15.0",
     "antd": "^6.1.0",
+    "axios": "^1.18.1",
     "plasmo": "0.90.5",
     "qrcode": "^1.5.4",
     "react": "18.2.0",
