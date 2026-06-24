@@ -26,41 +26,36 @@ name 规则：中文展示名，如"JSON 解析"、"二维码生成"
 
 ```
 src/tools-components/<tool-key>/
-├── index.tsx           （必需）组件入口
-├── index.module.css    （必需）组件样式
-└── component/          （可选）子组件目录
-└── utils.ts            （可选）工具函数
+└── index.tsx           （必需）组件入口模板
 ```
+
+后续开发具体功能时再按需在工具文件夹下添加 `index.module.css`、`component/` 子组件、`utils.ts` 等文件。
 
 ### index.tsx 模板
 
+新增工具时，`index.tsx` **只创建模板骨架，不实现具体业务逻辑**。组件内容只需一个占位的 `<div>` 展示工具名称即可，后续由用户另行开发具体功能：
+
 ```tsx
 import React from "react"
-import styles from "./index.module.css"
 
 /**
  * <工具中文名>工具
- * <一句话描述功能>
  */
 const <PascalCaseName> = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
   return (
-    <div className="flex-center px-16px">
-      <div className={styles.container}>
-        {/* 工具内容 */}
-      </div>
-    </div>
+    <div><工具中文名></div>
   )
 }
 
 export default <PascalCaseName>
 ```
 
+**注意**：模板阶段不需要创建 `index.module.css`、子组件、工具函数等文件，只创建 `index.tsx` 即可。待用户后续开发具体功能时再按需添加。
+
 关键规则：
 - 组件以函数形式定义，**必须 `export default`**
 - 组件名使用 PascalCase，如 `ColorConverter`、`JsonParser`
 - **必须接收 `isSidepanel` prop**（默认 `false`），用于区分侧边栏和标签页渲染
-- 遵循项目样式规范：样式 ≤ 5 个用 UnoCSS 原子类，> 5 个用 CSS Module
-- 优先使用 Ant Design 组件
 
 ### ⚠️ 代码位置硬性约束
 
@@ -102,10 +97,9 @@ export default <PascalCaseName>
 
 检查以下验证清单：
 - `index.tsx` 中组件名与 `export default` 一致
-- `index.module.css` 文件存在（即使暂无样式内容也需创建）
+- `index.tsx` 内容仅为模板骨架（`<div>工具名称</div>`），未实现具体业务逻辑
 - `TOOL_COMPONENT_MAP` 中 key 与组件目录名匹配
 - `TOOLS_CONFIG` 中 key、name、desc 完整且 `img` 为空
 - 组件接收了 `isSidepanel` prop
-- 样式遵循 ≤5 用原子类、>5 用 CSS Module 的规则
 
-完成后告知用户：工具已创建完成，重启 IDE 对话窗口后技能即可自动触发使用。
+完成后告知用户：工具模板已创建完成，重启 IDE 对话窗口后技能即可自动触发使用。后续可另行开发工具的具体功能，届时再按需添加样式、子组件、工具函数等文件。
