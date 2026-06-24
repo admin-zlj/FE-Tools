@@ -39,7 +39,20 @@ export const TOOLS_CONFIG = [
     name: "URL 参数解析",
     desc: "解析URL中的query参数，支持快捷复制每个key和value。",
     img: "https://img.alicdn.com/imgextra/i1/O1CN01CcYlEQ1tuC5moELPu_!!6000000005961-2-tps-108-108.png"
+  },
+
+  {
+    key: "mini-postman",
+    name: "MiniPostman",
+    desc: "调试简单的 GET、POST 接口，支持自定义请求头和请求体。",
+    img: "https://img.alicdn.com/imgextra/i4/O1CN01ZSGtUC23BRYVs7dnZ_!!6000000007217-2-tps-108-108.png"
   }
+  //   {
+  //     key: "header-injector",
+  //     name: "Header注入器",
+  //     desc: "注入自定义HTTP请求头，用于接口调试与开发。",
+  //     img: "https://img.alicdn.com/imgextra/i4/O1CN01S00HC31RDmApHXRFG_!!6000000002078-2-tps-108-108.png"
+  //   }
 ]
 
 //  获取工具配置

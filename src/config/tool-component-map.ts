@@ -10,7 +10,9 @@ const TOOL_COMPONENT_MAP = {
   "timestamp-converter": lazy(() => import("~tools-components/timestamp-converter")),
   "encoding-converter": lazy(() => import("~tools-components/encoding-converter")),
   "qr-generator": lazy(() => import("~tools-components/qr-generator")),
-  "url-parser": lazy(() => import("~tools-components/url-parser"))
+  "url-parser": lazy(() => import("~tools-components/url-parser")),
+  "mini-postman": lazy(() => import("~tools-components/mini-postman")),
+  "header-injector": lazy(() => import("~tools-components/header-injector"))
 }
 
 /**
