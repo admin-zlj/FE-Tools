@@ -109,7 +109,7 @@ Plasmo 框架支持多入口，本项目使用了以下入口：
 | **Options 选项页** | `src/options/index.tsx` | 在新标签页打开，用于管理（添加/移除）常用工具 |
 | **Side Panel 侧边栏** | `src/sidepanel/index.tsx` | 浏览器侧边栏，展示当前选中的工具，支持懒加载 |
 | **Tab 标签页** | `src/tabs/tool.tsx` | 在新标签页中独立展示某个工具 |
-| **Background** | `src/background.ts` | Service Worker，设置侧边栏行为（点击图标不自动打开侧边栏） |
+| **Background** | `src/background.ts` | Service Worker，设置侧边栏行为（点击图标不自动打开侧边栏），并代理 MiniPostman 的 HTTP 请求（绕过 CORS） |
 | **Content Script** | `src/contents/index.tsx` | 注入所有网页，当前为空实现 |
 
 ---
@@ -201,7 +201,7 @@ export const MINI_POSTMAN_HISTORY_KEY = "FE_TOOLS_MINI_POSTMAN_HISTORY" // MiniP
 
 ### 6.6 MiniPostman（`mini-postman`）
 - **功能**：调试简单的 GET、POST 接口，支持自定义请求头和请求体
-- **特性**：请求方法选择（GET/POST）、URL 输入、Headers 编辑（key-value 可增删）、Body 编辑（仅 POST）、响应展示（状态码、耗时、响应头、响应体）、请求历史记录（以 URL 为 key 保存最近 5 次请求参数，点击可恢复配置）
+- **特性**：请求方法选择（GET/POST）、URL 输入、Headers 编辑（key-value 可增删）、Body 编辑（仅 POST）、响应展示（状态码、耗时、响应头、响应体）、请求历史记录（以 URL 为 key 保存最近 5 次请求参数，点击可恢复配置）、请求统一由 Background Service Worker 代理发起（不受 CORS 限制）、支持流式响应（Port 长连接分片回传）、支持取消请求
 
 
 ---
@@ -283,10 +283,12 @@ Chrome 和 Edge 使用独立的工作流，互不影响：
 
 ```json
 {
-  "permissions": ["sidePanel", "storage"],
-  "host_permissions": ["https://*/*"]
+  "permissions": ["tabs", "sidePanel", "storage"],
+  "host_permissions": ["<all_urls>"]
 }
 ```
+
+> `package.json` 的 manifest 字段中声明 `tabs` 和 `host_permissions`（供 MiniPostman 请求代理跨域访问任意地址）；`sidePanel`、`storage` 由 Plasmo 根据代码使用情况自动注入。
 
 ---
 
@@ -302,4 +304,11 @@ Chrome 和 Edge 使用独立的工作流，互不影响：
   → 跳转 Options 选项页
   → 展示所有 TOOLS_CONFIG 中的工具卡片
   → 加入/移除常用 → 更新 storage[COMMON_TOOLS_KEY]
+
+MiniPostman 发送请求（跨域代理）
+  → 工具页通过 chrome.runtime.connect 建立 Port 长连接（名称 mini-postman-request）
+  → 将请求参数（url/method/headers/body/isStream）postMessage 给 Background SW
+  → SW 凭借 host_permissions 用 fetch 发起真实请求（不受 CORS 限制）
+  → 普通响应一次性回传 complete 消息；流式响应回传 meta + chunk 分片 + end
+  → 取消请求：工具页断开 Port，SW 监听 onDisconnect 中止 fetch
 ```
