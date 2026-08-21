@@ -14,7 +14,7 @@ const DEFAULT_HEADERS: HeaderItem[] = []
 
 /**
  * MiniPostman 工具主入口
- * 用于调试 HTTP 接口，未开启流式时使用 axios，开启流式时使用 fetch
+ * 用于调试 HTTP 接口，请求统一交由 Background Service Worker 代理发起（不受 CORS 限制）
  * 支持自定义请求头、请求体、流式响应，响应结果支持 JSON 解析切换
  */
 const MiniPostman = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
@@ -22,7 +22,7 @@ const MiniPostman = ({ isSidepanel = false }: { isSidepanel?: boolean }) => {
   const [url, setUrl] = useState("")
   /** 请求方法（仅 GET/POST） */
   const [method, setMethod] = useState<RequestMethod>("GET")
-  /** 是否启用流式响应（开启后自动使用 fetch 引擎） */
+  /** 是否启用流式响应 */
   const [isStream, setIsStream] = useState(false)
   /** 自定义请求头列表 */
   const [headers, setHeaders] = useState<HeaderItem[]>(DEFAULT_HEADERS)

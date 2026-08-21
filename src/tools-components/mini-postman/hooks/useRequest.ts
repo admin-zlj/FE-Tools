@@ -1,4 +1,3 @@
-import axios, { type AxiosRequestConfig } from "axios"
 import { useRef, useState } from "react"
 
 /** 请求方法类型（仅支持 GET 和 POST） */
@@ -52,29 +51,115 @@ interface SendRequestParams {
   isStream: boolean
 }
 
+/** 与 background.ts 保持一致的请求代理 Port 名称 */
+const REQUEST_PORT_NAME = "mini-postman-request"
+
+/** Background 回传的普通响应消息 */
+interface CompleteMessage {
+  type: "complete"
+  status: number
+  statusText: string
+  duration: number
+  headers: Record<string, string>
+  body: string
+}
+
+/** Background 回传的流式响应头消息 */
+interface MetaMessage {
+  type: "meta"
+  status: number
+  statusText: string
+  duration: number
+  headers: Record<string, string>
+}
+
+/** Background 回传的流式内容分片消息 */
+interface ChunkMessage {
+  type: "chunk"
+  text: string
+}
+
+/** Background 回传的流式结束消息 */
+interface EndMessage {
+  type: "end"
+}
+
+/** Background 回传的错误消息 */
+interface ErrorMessage {
+  type: "error"
+  error: string
+  duration: number
+}
+
+type PortResponseMessage = CompleteMessage | MetaMessage | ChunkMessage | EndMessage | ErrorMessage
+
 /**
  * MiniPostman 请求逻辑 Hook
- * 未开启流式时使用 axios，开启流式时使用 fetch（仅 fetch 支持流式响应）
+ * 请求统一交由 Background Service Worker 代理发起（拥有 host_permissions，不受 CORS 限制）
+ * 页面与 SW 之间通过 chrome.runtime.connect 建立 Port 长连接：
+ * - 普通响应：SW 一次性回传 complete 消息
+ * - 流式响应：SW 先回传 meta（响应头），再逐块回传 chunk，最后回传 end
+ * - 取消请求：断开 Port，SW 侧监听 onDisconnect 中止 fetch
  */
 export function useRequest() {
   /** 当前响应数据 */
   const [response, setResponse] = useState<ResponseData>(INITIAL_RESPONSE)
-  /** 用于取消 axios 请求的 AbortController */
-  const abortControllerRef = useRef<AbortController | null>(null)
-  /** 用于取消 fetch 请求的 AbortController */
-  const fetchAbortRef = useRef<AbortController | null>(null)
+  /** 当前请求对应的 Port 连接 */
+  const portRef = useRef<chrome.runtime.Port | null>(null)
 
-  /** 取消正在进行的请求 */
+  /** 取消正在进行的请求（断开 Port，SW 侧会中止 fetch） */
   const cancelRequest = () => {
-    abortControllerRef.current?.abort()
-    fetchAbortRef.current?.abort()
-    abortControllerRef.current = null
-    fetchAbortRef.current = null
+    portRef.current?.disconnect()
+    portRef.current = null
     setResponse((prev) => (prev.loading ? { ...INITIAL_RESPONSE } : prev))
   }
 
-  /** 发起请求：根据 isStream 自动选择引擎 */
-  const sendRequest = async (params: SendRequestParams) => {
+  /** 处理 Background 回传的各类消息 */
+  const handlePortMessage = (message: PortResponseMessage) => {
+    switch (message.type) {
+      case "complete":
+        setResponse({
+          loading: false,
+          status: message.status,
+          statusText: message.statusText,
+          duration: message.duration,
+          headers: message.headers,
+          body: message.body,
+          isStream: false,
+          error: ""
+        })
+        break
+      case "meta":
+        setResponse({
+          loading: true,
+          status: message.status,
+          statusText: message.statusText,
+          duration: message.duration,
+          headers: message.headers,
+          body: "",
+          isStream: true,
+          error: ""
+        })
+        break
+      case "chunk":
+        // 每次收到分片时追加到响应体
+        setResponse((prev) => ({
+          ...prev,
+          body: prev.body + message.text,
+          loading: true
+        }))
+        break
+      case "end":
+        setResponse((prev) => ({ ...prev, loading: false }))
+        break
+      case "error":
+        setResponse({ ...INITIAL_RESPONSE, duration: message.duration, error: message.error })
+        break
+    }
+  }
+
+  /** 发起请求：通过 Port 将请求参数发送给 Background SW 执行 */
+  const sendRequest = (params: SendRequestParams) => {
     const { url, method, headers, body, isStream } = params
 
     if (!url.trim()) {
@@ -94,188 +179,28 @@ export function useRequest() {
     })
 
     setResponse({ ...INITIAL_RESPONSE, loading: true })
-    const startTime = Date.now()
 
     try {
-      if (isStream) {
-        // 流式响应使用 fetch
-        await sendWithFetch(url, method, requestHeaders, body, startTime)
-      } else {
-        // 普通响应使用 axios
-        await sendWithXhr(url, method, requestHeaders, body, startTime)
-      }
-    } catch (error) {
-      const duration = Date.now() - startTime
-      if ((error as Error).name === "CanceledError" || (error as Error).name === "AbortError") {
-        // 用户主动取消，不显示错误
-        return
-      }
-      setResponse({
-        loading: false,
-        status: null,
-        statusText: "",
-        duration,
-        headers: {},
-        body: "",
-        isStream: false,
-        error: (error as Error).message || "请求失败"
-      })
-    }
-  }
+      const port = chrome.runtime.connect({ name: REQUEST_PORT_NAME })
+      portRef.current = port
 
-  /** 使用 axios 发起普通请求（不支持流式） */
-  const sendWithXhr = async (
-    url: string,
-    method: RequestMethod,
-    headers: Record<string, string>,
-    body: string,
-    startTime: number
-  ) => {
-    const controller = new AbortController()
-    abortControllerRef.current = controller
-
-    const config: AxiosRequestConfig = {
-      url,
-      method: method.toLowerCase() as AxiosRequestConfig["method"],
-      headers,
-      signal: controller.signal,
-      responseType: "text"
-    }
-
-    // POST 请求设置 body
-    if (method === "POST" && body.trim()) {
-      config.data = tryParseJson(body) || body
-    }
-
-    const res = await axios.request(config)
-    const duration = Date.now() - startTime
-
-    // axios 的 AxiosHeaders 通过 toJSON() 获取扁平对象再遍历
-    const responseHeaders: Record<string, string> = {}
-    try {
-      const rawHeaders = (res.headers as unknown as Record<string, string>)
-      Object.entries(rawHeaders).forEach(([key, value]) => {
-        if (typeof value === "string") {
-          responseHeaders[key] = value
+      port.onMessage.addListener(handlePortMessage)
+      port.onDisconnect.addListener(() => {
+        portRef.current = null
+        // 连接异常断开（如扩展被重新加载）时给出提示，用户主动取消时 lastError 为空
+        const lastError = chrome.runtime.lastError
+        if (lastError) {
+          setResponse((prev) =>
+            prev.loading
+              ? { ...INITIAL_RESPONSE, error: "与后台服务连接中断，请重新打开工具后重试" }
+              : prev
+          )
         }
       })
-    } catch {
-      // 兜底：如果 headers 无法遍历则忽略
-    }
 
-    setResponse({
-      loading: false,
-      status: res.status,
-      statusText: res.statusText,
-      duration,
-      headers: responseHeaders,
-      body: typeof res.data === "string" ? res.data : JSON.stringify(res.data, null, 2),
-      isStream: false,
-      error: ""
-    })
-  }
-
-  /** 使用 fetch API 发起流式请求 */
-  const sendWithFetch = async (
-    url: string,
-    method: RequestMethod,
-    headers: Record<string, string>,
-    body: string,
-    startTime: number
-  ) => {
-    const controller = new AbortController()
-    fetchAbortRef.current = controller
-
-    const fetchHeaders = new Headers(headers)
-    const fetchConfig: RequestInit = {
-      method,
-      headers: fetchHeaders,
-      signal: controller.signal
-    }
-
-    // POST 请求设置 body
-    if (method === "POST" && body.trim()) {
-      fetchConfig.body = body
-    }
-
-    const res = await fetch(url, fetchConfig)
-    const duration = Date.now() - startTime
-
-    const responseHeaders: Record<string, string> = {}
-    res.headers.forEach((value, key) => {
-      responseHeaders[key] = value
-    })
-
-    // fetch 流式响应处理
-    if (res.body instanceof ReadableStream) {
-      await handleFetchStreamResponse(res, responseHeaders, duration)
-    } else {
-      // 兜底：无 body 时按普通响应处理
-      const responseBody = await res.text()
-      setResponse({
-        loading: false,
-        status: res.status,
-        statusText: res.statusText || "",
-        duration,
-        headers: responseHeaders,
-        body: responseBody,
-        isStream: false,
-        error: ""
-      })
-    }
-  }
-
-  /** 处理 fetch 流式响应 */
-  const handleFetchStreamResponse = async (
-    res: Response,
-    responseHeaders: Record<string, string>,
-    duration: number
-  ) => {
-    const stream = res.body as ReadableStream
-    const reader = stream.getReader()
-    const decoder = new TextDecoder()
-    let accumulatedBody = ""
-
-    setResponse({
-      loading: true,
-      status: res.status,
-      statusText: res.statusText || "",
-      duration,
-      headers: responseHeaders,
-      body: "",
-      isStream: true,
-      error: ""
-    })
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        accumulatedBody += decoder.decode(value, { stream: true })
-        // 每次读取到数据时更新响应体
-        setResponse((prev) => ({
-          ...prev,
-          body: accumulatedBody,
-          loading: true
-        }))
-      }
-      // 流结束
-      setResponse((prev) => ({ ...prev, loading: false }))
-    } catch (streamError) {
-      setResponse((prev) => ({
-        ...prev,
-        loading: false,
-        error: `流式读取中断: ${(streamError as Error).message}`
-      }))
-    }
-  }
-
-  /** 尝试解析 JSON 字符串，失败返回 null */
-  const tryParseJson = (text: string): unknown => {
-    try {
-      return JSON.parse(text)
-    } catch {
-      return null
+      port.postMessage({ url, method, headers: requestHeaders, body, isStream })
+    } catch (error) {
+      setResponse({ ...INITIAL_RESPONSE, error: (error as Error).message || "请求失败" })
     }
   }
 
