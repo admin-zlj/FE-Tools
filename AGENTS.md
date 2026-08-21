@@ -84,7 +84,7 @@ fe-tools/
 │       ├── json-parser/                 # JSON 解析工具
 │       ├── timestamp-converter/         # 时间戳转换工具
 │       ├── encoding-converter/          # 编码转换工具
-│       ├── qr-generator/                # 二维码生成工具
+│       ├── qr-generator/                # 二维码/条码生成工具
 │       ├── url-parser/                  # URL 参数解析工具
 │       └── mini-postman/                # MiniPostman 接口调试工具
 │
@@ -195,9 +195,9 @@ export const MINI_POSTMAN_HISTORY_KEY = "FE_TOOLS_MINI_POSTMAN_HISTORY" // MiniP
 - **功能**：支持 Base64、Unicode、URL 编码等编码转换
 - **特性**：多种编码方式选择、实时转换、支持复制
 
-### 6.5 二维码生成（`qr-generator`）
-- **功能**：输入文本或链接，快速生成对应的二维码图片
-- **特性**：实时生成、支持下载 PNG、主题色 #16a187、空状态占位提示
+### 6.5 二维码/条码生成（`qr-generator`）
+- **功能**：输入文本或链接，快速生成对应的二维码或条码图片
+- **特性**：实时生成、支持下载 PNG、主题色 #16a187、空状态占位提示、二维码（qrcode）/条码（jsbarcode，CODE128 格式）双模式，左右两个按钮分别生成、下载文件名随码类型变化、颜色配置对两种码生效
 
 ### 6.6 MiniPostman（`mini-postman`）
 - **功能**：调试简单的 GET、POST 接口，支持自定义请求头和请求体
