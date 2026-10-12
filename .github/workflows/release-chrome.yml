@@ -89,13 +89,106 @@ jobs:
           prerelease: ${{ inputs.release_type == 'prerelease' }}
           files: fe-tools-chrome-v${{ steps.bump.outputs.VERSION }}.zip
 
-      # 10. 上传到 Chrome Web Store
+      # 10. 获取 OAuth2 Access Token
+      - name: Get Access Token
+        id: auth
+        run: |
+          RESPONSE=$(curl -s -X POST https://oauth2.googleapis.com/token \
+            -d "client_id=${{ secrets.CHROME_CLIENT_ID }}" \
+            -d "client_secret=${{ secrets.CHROME_CLIENT_SECRET }}" \
+            -d "refresh_token=${{ secrets.CHROME_REFRESH_TOKEN }}" \
+            -d "grant_type=refresh_token")
+          echo "::debug::Token response: $RESPONSE"
+          ACCESS_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
+          if [ "$ACCESS_TOKEN" = "null" ] || [ -z "$ACCESS_TOKEN" ]; then
+            echo "::error::Failed to get access token. Response: $RESPONSE"
+            exit 1
+          fi
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "TOKEN=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
+          echo "✅ Access token obtained successfully"
+
+      # 11. 上传到 Chrome Web Store (V2 API)
       - name: Upload to Chrome Web Store
-        uses: mnao305/chrome-extension-upload@v5.0.0
-        with:
-          file-path: fe-tools-chrome-v${{ steps.bump.outputs.VERSION }}.zip
-          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-          publish: true
+        id: upload
+        run: |
+          PUBLISHER_ID="${{ secrets.CHROME_PUBLISHER_ID }}"
+          EXTENSION_ID="${{ secrets.CHROME_EXTENSION_ID }}"
+          TOKEN="${{ steps.auth.outputs.TOKEN }}"
+          ZIP_FILE="fe-tools-chrome-v${{ steps.bump.outputs.VERSION }}.zip"
+
+          echo "📦 Uploading $ZIP_FILE ..."
+          UPLOAD_RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "x-goog-api-version: 2" \
+            -X POST \
+            -T "$ZIP_FILE" \
+            "https://chromewebstore.googleapis.com/upload/v2/publishers/$PUBLISHER_ID/items/$EXTENSION_ID:upload")
+
+          HTTP_CODE=$(echo "$UPLOAD_RESPONSE" | tail -1)
+          BODY=$(echo "$UPLOAD_RESPONSE" | sed '$d')
+          echo "Upload HTTP status: $HTTP_CODE"
+          echo "Upload response: $BODY"
+
+          if [ "$HTTP_CODE" -ge 400 ]; then
+            echo "::error::Upload failed with HTTP $HTTP_CODE: $BODY"
+            exit 1
+          fi
+
+          UPLOAD_STATE=$(echo "$BODY" | jq -r '.uploadState')
+          echo "Upload state: $UPLOAD_STATE"
+
+          # 如果上传仍在处理中，轮询 fetchStatus
+          if [ "$UPLOAD_STATE" = "UPLOAD_IN_PROGRESS" ]; then
+            echo "⏳ Upload in progress, polling for status..."
+            for i in $(seq 1 12); do
+              sleep 10
+              STATUS_RESPONSE=$(curl -s \
+                -H "Authorization: Bearer $TOKEN" \
+                -H "x-goog-api-version: 2" \
+                "https://chromewebstore.googleapis.com/v2/publishers/$PUBLISHER_ID/items/$EXTENSION_ID:fetchStatus")
+              ASYNC_STATE=$(echo "$STATUS_RESPONSE" | jq -r '.lastAsyncUploadState')
+              echo "Poll #$i - lastAsyncUploadState: $ASYNC_STATE"
+              if [ "$ASYNC_STATE" = "SUCCESS" ]; then
+                echo "✅ Upload completed successfully"
+                break
+              elif [ "$ASYNC_STATE" = "FAILURE" ]; then
+                echo "::error::Upload processing failed: $STATUS_RESPONSE"
+                exit 1
+              fi
+            done
+            if [ "$ASYNC_STATE" = "UPLOAD_IN_PROGRESS" ]; then
+              echo "::error::Upload timed out after 120 seconds"
+              exit 1
+            fi
+          elif [ "$UPLOAD_STATE" = "FAILURE" ]; then
+            echo "::error::Upload failed: $BODY"
+            exit 1
+          else
+            echo "✅ Upload state: $UPLOAD_STATE"
+          fi
+
+      # 12. 发布到 Chrome Web Store (V2 API)
+      - name: Publish to Chrome Web Store
+        run: |
+          PUBLISHER_ID="${{ secrets.CHROME_PUBLISHER_ID }}"
+          EXTENSION_ID="${{ secrets.CHROME_EXTENSION_ID }}"
+          TOKEN="${{ steps.auth.outputs.TOKEN }}"
+
+          echo "🚀 Publishing extension..."
+          PUBLISH_RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "x-goog-api-version: 2" \
+            -X POST \
+            "https://chromewebstore.googleapis.com/v2/publishers/$PUBLISHER_ID/items/$EXTENSION_ID:publish")
+
+          HTTP_CODE=$(echo "$PUBLISH_RESPONSE" | tail -1)
+          BODY=$(echo "$PUBLISH_RESPONSE" | sed '$d')
+          echo "Publish HTTP status: $HTTP_CODE"
+          echo "Publish response: $BODY"
+
+          if [ "$HTTP_CODE" -ge 400 ]; then
+            echo "::error::Publish failed with HTTP $HTTP_CODE: $BODY"
+            exit 1
+          fi
+          echo "✅ Extension submitted for review and publishing"
